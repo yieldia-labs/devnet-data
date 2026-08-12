@@ -1,0 +1,124 @@
+{
+  "schema_version": "1.0.0",
+  "prospectus_id": "harborflow-pilot-v1",
+  "prospectus_provenance": {
+    "issuer_account": "BFaJTiS9z8sgHS2ewvRPoTLLSXUrPBEGxtdqSRNWNagL",
+    "prospectus_account": "98njYnX9gNC6GUTGdy6oKKSwLWsAUzV5c9EL3LGwnVQx",
+    "prospectus_id_hash": "sha256:Eb4gy1by917TLAc7B2c2wjzeBz8jXZLguFbjohTnn1At",
+    "author_pubkey": "DQxiJX4b8xFMEpJTG6TUbymU8CTbBzGhR584CnH7NcXn",
+    "document_uri": "https://raw.githubusercontent.com/yieldia-labs/devnet-data/main/harborflow/pilot-v1/prospectus.md",
+    "terms_hash": "sha256:4PkMbxfmZi9HrJ22KySTsQNWYRbB4PiV4d1QjSuT5Bvf"
+  },
+  "issuer_context": {
+    "issuer_name": "HarborFlow",
+    "operating_entity": "HarborFlow Labs, a fictional devnet test entity",
+    "product_summary": "HarborFlow is a fictional Solana-native treasury automation protocol used to exercise Yieldia's offering lifecycle on devnet.",
+    "wallet_control_explanation": "The HarborFlow devnet authority controls the onchain Issuer and its canonical YTUSD associated token account used as the offering treasury.",
+    "wallets": [
+      {
+        "label": "issuer-root",
+        "address": "BFaJTiS9z8sgHS2ewvRPoTLLSXUrPBEGxtdqSRNWNagL",
+        "role": "onchain Issuer account"
+      },
+      {
+        "label": "issuer-authority",
+        "address": "DQxiJX4b8xFMEpJTG6TUbymU8CTbBzGhR584CnH7NcXn",
+        "role": "prospectus author and Issuer authority"
+      },
+      {
+        "label": "ytusd-treasury",
+        "address": "D4b8MtxYQNyLns4cCTw96rkvhUS2nJEvR7pWcrkNAZw2",
+        "role": "primary-sale proceeds destination"
+      }
+    ]
+  },
+  "economic_claim": {
+    "instrument_right": "Each instrument token carries an equal pro-rata claim on the YTUSD actually funded into this offering's Yield vault.",
+    "economic_formula": "The target funding is 110,000,000 YTUSD base units for 100 instrument tokens; the program pays floor(funded base units / 100) per redeemed token when a holder redeems their full balance.",
+    "revenue_basis": "Synthetic test YTUSD allocated to HarborFlow by the Yieldia devnet operator; no real-world revenue is represented.",
+    "revenue_period_start": "2026-08-15",
+    "revenue_period_end": "2026-09-15",
+    "payment_date": "2026-09-30",
+    "payment_asset": "YTUSD on Solana devnet",
+    "credibility_explanation": "The Yieldia devnet operator controls the YTUSD mint and can allocate the test balance needed to fund the deterministic proof.",
+    "expected_source_of_funds": "Devnet YTUSD transferred by the Yieldia operator to the HarborFlow authority, plus the YTUSD received from the primary sale.",
+    "source_plausibility": "The operator minted 1,000,000,000 YTUSD for devnet testing, while this proof targets only 110 YTUSD of Yield funding.",
+    "dependencies": [
+      "Two controlled buyers purchase all 100 instrument units.",
+      "HarborFlow settles the sold-out offering.",
+      "The operator supplies enough test YTUSD for HarborFlow to fund 110 YTUSD into the Yield vault."
+    ]
+  },
+  "evidence": {
+    "onchain_references": [
+      {
+        "label": "issuer-root",
+        "address": "BFaJTiS9z8sgHS2ewvRPoTLLSXUrPBEGxtdqSRNWNagL",
+        "role": "registered HarborFlow Issuer"
+      },
+      {
+        "label": "prospectus",
+        "address": "98njYnX9gNC6GUTGdy6oKKSwLWsAUzV5c9EL3LGwnVQx",
+        "role": "prospectus PDA derived from the issuer and prospectus ID hash"
+      },
+      {
+        "label": "ytusd-mint",
+        "address": "6To6oV5uLtZCTXg7kD6cSnKqsN6UWxjkEAZnDsWF81WM",
+        "role": "price and Yield asset mint"
+      },
+      {
+        "label": "ytusd-treasury",
+        "address": "D4b8MtxYQNyLns4cCTw96rkvhUS2nJEvR7pWcrkNAZw2",
+        "role": "issuer YTUSD treasury token account"
+      }
+    ],
+    "operating_evidence_summary": "The fixture provides deterministic issuer, author, mint, treasury, and prospectus addresses for an inspectable devnet lifecycle; it provides no evidence of real operations or revenue.",
+    "supporting_documents": [
+      {
+        "label": "issuer-metadata",
+        "uri": "https://raw.githubusercontent.com/yieldia-labs/devnet-data/main/harborflow/issuer.json",
+        "description": "Canonical HarborFlow devnet issuer metadata."
+      },
+      {
+        "label": "ytusd-explorer",
+        "uri": "https://explorer.solana.com/address/6To6oV5uLtZCTXg7kD6cSnKqsN6UWxjkEAZnDsWF81WM?cluster=devnet",
+        "description": "Solana Explorer view of the YTUSD devnet mint."
+      }
+    ],
+    "interpretation_notes": "All balances and transactions are devnet-only. Addresses are real devnet references, while the issuer narrative and economic activity are synthetic test data."
+  },
+  "risks": {
+    "operational": [
+      "Solana devnet may be reset, unavailable, congested, or rate-limited.",
+      "A controlled wallet may fail to complete its assigned lifecycle action."
+    ],
+    "financial": [
+      "YTUSD has no real-world value.",
+      "The stated payout is a test target, not an enforceable offchain obligation."
+    ],
+    "vault_funding_risks": [
+      "The operator may not transfer sufficient YTUSD to HarborFlow.",
+      "HarborFlow may not submit the Yield-funding transaction."
+    ],
+    "market_failure_risks": [
+      "The primary sale fails unless all 100 units are purchased before the slot deadline.",
+      "The sold-out offering becomes refundable if settlement is delayed beyond the approved windows."
+    ]
+  },
+  "market_readiness": {
+    "tradeable_market_rationale": "Transferable classic SPL tokens make the successful lifecycle observable across controlled devnet wallets, but this fixture does not claim real liquidity or price discovery.",
+    "market_support_sources": [
+      "Controlled Yieldia devnet buyer wallets.",
+      "Solana Explorer account and transaction views.",
+      "The hosted Yieldia proof dashboard once connected to devnet."
+    ],
+    "monitorable_signals": [
+      "Prospectus and offering account state.",
+      "YTUSD treasury and vault balances.",
+      "Buyer receipts, instrument balances, and lifecycle transaction signatures."
+    ],
+    "participation_restrictions": "Only controlled devnet wallets should participate; the fixture is not offered on mainnet.",
+    "transfer_restrictions": "No instrument tokens exist before successful settlement and allocation claims. Once minted, the current classic SPL instrument has no program-enforced transfer restriction; after offering close, unredeemed tokens are inert even if they remain transferable.",
+    "crowdfunding_difference": "The proof binds fixed issuance, price, assets, treasury, windows, evidence, settlement, and redemption to one hash-addressed prospectus and an inspectable onchain lifecycle."
+  }
+}
