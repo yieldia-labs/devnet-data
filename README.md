@@ -95,4 +95,20 @@ just yieldia issuer register \
 
 After registration, keep the published bytes stable. Changing them changes the metadata hash and requires a matching onchain `issuer_update_metadata` transaction.
 
+### 7. Optionally fund the issuer with test YTUSD
+
+If the issuer needs the devnet payment token for prospectus testing, transfer YTUSD from a funded wallet:
+
+```sh
+just solana token-transfer \
+  /absolute/path/to/<funding-keypair>.json \
+  --url https://api.devnet.solana.com \
+  --fund-recipient \
+  6To6oV5uLtZCTXg7kD6cSnKqsN6UWxjkEAZnDsWF81WM \
+  <amount-in-ytusd> \
+  <authority-address>
+```
+
+The funding keypair owns the source YTUSD and pays the transaction fee and recipient account rent. `--fund-recipient` creates the issuer authority's YTUSD associated token account when needed. Record the printed `Recipient associated token account`; that token-account address, not the authority address, can be used as a prospectus treasury.
+
 Never commit keypairs, seed phrases, private keys, or `.env` files to this repository.
