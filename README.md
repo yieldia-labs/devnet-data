@@ -152,7 +152,7 @@ Complete every field under `terms`. Numeric values are quoted decimal strings fr
 
 The body is free-form Markdown, but remove the drafting note and every `REPLACE_ME` before publication.
 
-### 3. Derive the shared hashes and Prospectus PDA
+### 3. Derive the shared hashes
 
 After `prospectus_id` and every term are final, derive their canonical hashes:
 
@@ -161,27 +161,21 @@ just yieldia hash prospectus \
   .cache/<issuer>-<prospectus>/prospectus.md
 ```
 
-Copy `prospectus_id_hash` and `terms_hash` into both documents. The current CLI has no standalone Prospectus-address command, so derive the PDA with its generated client. Paste the full hash value, including its `sha256:` prefix, below:
+Copy `prospectus_id_hash` and `terms_hash` into both documents.
+
+### 4. Derive the Prospectus account
+
+Derive the deterministic Prospectus PDA from the registered Issuer PDA and the full `prospectus_id_hash`, including its `sha256:` prefix:
 
 ```sh
-MISE_EXEC_TOOLS="node pnpm" ./scripts/docker/run-tooling.sh \
-  mikasa-node-tooling:dev \
-  node --experimental-strip-types --input-type=module --eval '
-import { createRequire } from "node:module";
-const require = createRequire(new URL("./packages/offering-client/package.json", import.meta.url));
-const { getBase58Encoder } = require("@solana/kit");
-const { findProspectusPda } = await import("./packages/offering-client/src/generated/pdas/prospectus.ts");
-const [pda] = await findProspectusPda({
-  issuer: "<issuer-pda>",
-  prospectusIdHash: getBase58Encoder().encode("<prospectus-id-hash>".replace("sha256:", "")),
-});
-console.log(pda);
-'
+just yieldia prospectus address \
+  <issuer-pda> \
+  <prospectus-id-hash>
 ```
 
 Copy the result into `proof-pack.json` as `prospectus_provenance.prospectus_account` and use the same address in any proof-pack evidence entry that names the prospectus. A Prospectus is a PDA; it has no keypair.
 
-### 4. Complete and hash the proof pack
+### 5. Complete and hash the proof pack
 
 Set `author_pubkey` to the issuer authority address from the issuer workflow. Keep `prospectus_id`, `prospectus_provenance.issuer_account`, `prospectus_provenance.document_uri`, `prospectus_provenance.terms_hash`, and `issuer_context.issuer_name` equal to their `prospectus.md` counterparts. Complete every remaining proof-pack field, then validate it against the issuer metadata snapshot:
 
@@ -203,7 +197,7 @@ just yieldia hash file \
 
 Copy the result into `prospectus.md` as `proof_pack_hash`. Any later proof-pack edit requires recomputing this hash.
 
-### 5. Validate the complete local pair
+### 6. Validate the complete local pair
 
 ```sh
 just yieldia prospectus validate \
@@ -213,7 +207,7 @@ just yieldia prospectus validate \
 
 The command must report the expected `prospectus_id_hash`, `terms_hash`, and `proof_pack_hash`, plus the final exact-byte `document_hash`.
 
-### 6. Publish the exact bytes
+### 7. Publish the exact bytes
 
 Copy the validated pair into this repository, commit both files together, and push them before contacting Solana:
 
@@ -231,7 +225,7 @@ git -C /absolute/path/to/devnet-data commit -m "Add <display-name> prospectus"
 git -C /absolute/path/to/devnet-data push
 ```
 
-### 7. Simulate registration
+### 8. Simulate registration
 
 ```sh
 just yieldia prospectus simulate \
@@ -241,7 +235,7 @@ just yieldia prospectus simulate \
 
 Simulation downloads and validates the published pair, derives and checks the Prospectus PDA, and runs the unsigned transaction without reading a keypair, signing, or submitting anything. Check the cluster genesis hash, author, Issuer, Prospectus PDA, treasury, mints, hashes, fee, and compute units.
 
-### 8. Register the prospectus
+### 9. Register the prospectus
 
 ```sh
 just yieldia prospectus register \
