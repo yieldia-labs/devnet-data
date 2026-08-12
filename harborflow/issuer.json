@@ -1,0 +1,18 @@
+{
+  "schema_version": "1.0.0",
+  "issuer_account": "BFaJTiS9z8sgHS2ewvRPoTLLSXUrPBEGxtdqSRNWNagL",
+  "metadata_uri": "https://raw.githubusercontent.com/yieldia-labs/devnet-data/main/harborflow/issuer.json",
+  "display_name": "HarborFlow",
+  "description": "A fictional Solana-native treasury automation protocol used by onchain teams to manage recurring payouts and reserve policies for Yieldia devnet testing.",
+  "external_links": [
+    {
+      "label": "Devnet data",
+      "uri": "https://github.com/yieldia-labs/devnet-data/tree/main/harborflow"
+    }
+  ],
+  "operating_entity": {
+    "name": "HarborFlow Labs",
+    "jurisdiction": "Fictional devnet test environment",
+    "registration_id": "DEVNET-HARBORFLOW-001"
+  }
+}
