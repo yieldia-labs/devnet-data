@@ -82,13 +82,13 @@ git -C /absolute/path/to/devnet-data push
 ### 6. Simulate registration
 
 ```sh
-just yieldia issuer simulate \
+just yieldia issuer register \
   https://raw.githubusercontent.com/yieldia-labs/devnet-data/main/<issuer>/issuer.json \
-  --authority <authority-address> \
-  --rpc-url https://api.devnet.solana.com
+  --rpc-url https://api.devnet.solana.com \
+  --signer <authority-address>
 ```
 
-`--authority` is the public address recorded in step 1. The CLI uses it to derive and verify the Issuer PDA while building an unsigned transaction; simulation does not read the authority keypair, sign, or submit anything.
+Simulation and registration are now the same command, told apart by their flags: without `--submit` it builds and simulates, with it signs and submits. `--signer` is the public address recorded in step 1. The CLI uses it to derive and verify the Issuer PDA while building an unsigned transaction; simulation does not read the authority keypair, sign, or submit anything.
 
 Check that the output contains the expected authority, Issuer PDA, metadata URI and hash, devnet genesis hash, and a successful simulation.
 
@@ -99,10 +99,10 @@ just yieldia issuer register \
   https://raw.githubusercontent.com/yieldia-labs/devnet-data/main/<issuer>/issuer.json \
   --rpc-url https://api.devnet.solana.com \
   --keypair /absolute/path/to/yieldia-keys/devnet/issuers/<issuer>-authority.json \
-  --yes
+  --submit
 ```
 
-`--yes` signs and submits the transaction. Verify the Issuer PDA on Solana Explorer. If submission succeeds but confirmation is unavailable, check the reported signature and PDA before rebuilding the transaction with a new blockhash.
+The same command with `--keypair` and `--submit` signs and submits it. The two flags are required together: a keypair without `--submit` is refused rather than quietly building unsigned. Verify the Issuer PDA on Solana Explorer. If submission succeeds but confirmation is unavailable, check the reported signature and PDA before rebuilding the transaction with a new blockhash.
 
 After registration, keep the published bytes stable. Changing them changes the metadata hash and requires a matching onchain `issuer_update_metadata` transaction.
 
@@ -228,12 +228,15 @@ git -C /absolute/path/to/devnet-data push
 ### 8. Simulate registration
 
 ```sh
-just yieldia prospectus simulate \
+just yieldia prospectus register \
   https://raw.githubusercontent.com/yieldia-labs/devnet-data/main/<issuer>/<prospectus>/prospectus.md \
-  --rpc-url https://api.devnet.solana.com
+  --rpc-url https://api.devnet.solana.com \
+  --signer <authority-address>
 ```
 
-Simulation downloads and validates the published pair, derives and checks the Prospectus PDA, and runs the unsigned transaction without reading a keypair, signing, or submitting anything. Check the cluster genesis hash, author, Issuer, Prospectus PDA, treasury, mints, hashes, fee, and compute units.
+Without `--submit` the command downloads and validates the published pair, derives and checks the Prospectus PDA, and simulates the unsigned transaction without reading a keypair, signing, or submitting anything. Check the cluster genesis hash, author, Issuer, Prospectus PDA, treasury, mints, hashes, fee, and compute units.
+
+`--signer` has exactly one correct value here: the `author_pubkey` the proof pack names. The command compares them and refuses a disagreement with `provenance.author_mismatch`, which is the same check the submission runs — so this step predicts the next one instead of passing for a signer that would then be refused.
 
 ### 9. Register the prospectus
 
@@ -242,7 +245,7 @@ just yieldia prospectus register \
   https://raw.githubusercontent.com/yieldia-labs/devnet-data/main/<issuer>/<prospectus>/prospectus.md \
   --rpc-url https://api.devnet.solana.com \
   --keypair /absolute/path/to/yieldia-keys/devnet/issuers/<issuer>-authority.json \
-  --yes
+  --submit
 ```
 
 The issuer authority keypair must match `author_pubkey`; it signs the transaction and pays the fee and account rent. Verify the confirmed Prospectus PDA, signature, and slot. No separate registration file is required: the PDA is deterministic and already stored in the proof pack. If confirmation is unavailable after submission, inspect the reported signature and PDA before retrying.
